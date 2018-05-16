@@ -1,0 +1,61 @@
+function writeOctMeta(filename, mode, data, typemode)
+%WRITEOCTMETA Write meta information to a OCTSEG meta file
+% writeOctMeta(FILENAME, MODE, DATA, TYPEMODE)
+% Writes data to a meta file. 
+% FILENAME: Name of the metafile without ".meta" ending
+% MODE: Name of the metatag to write
+% DATA: Data to write  
+% TYPEMODE (OPTIONAL): Determines if the data is writen as a number or string
+%   Options:
+%   'num' (default): Write as number 
+%   'str': Write as string
+%
+% Structure of the meta file ahould be:
+% Each line consists of a tag (= MODE) followed by one or more data values
+% separated by a whitespace
+%
+% Author: Markus A. Mayer, Pattern Recognition Lab, 
+%   University of Erlangen-Nuremb
+
+
+%Reads data from a meta file. 
+% Structure of the Meta file is as follows:
+% Each line consists of a tag (=mode) followed by a couple of numbers
+% Separated by whitespace.
+
+if nargin < 4
+    typemode = 'num';
+end
+
+fidR = fopen([filename '.meta'], 'r');
+fidW = fopen([filename '.metaX'], 'wt');
+line = fgetl(fidR);
+written = 0;
+str = sprintf('%d ', data);
+outputstring = [mode ' ' str];
+outputstring = deblank(outputstring);
+
+while (numel(output) == 0) && ischar(line)
+    [des rem] = strtok(line);
+    if strcmp(des, mode)
+        fprintf(fidW, '%s\n', outputstring);
+        written = 1;
+    else
+        fprintf(fidW, '%s\n', line);
+    end
+    line = fgetl(fidR);
+end
+if written == 0
+    fprintf(fidW, '%s\n', outputstring);
+end
+
+fclose(fidR);
+fclose(fidW);
+
+if ispc
+    system(['del ' filename '.meta']);
+    system(['move ' filename '.metaX ' filename '.meta']);
+else
+    system(['rm -f ' filename '.meta']);
+    system(['mv ' filename '.metaX ' filename '.meta']);
+end

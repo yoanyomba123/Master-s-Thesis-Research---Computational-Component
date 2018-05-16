@@ -1,0 +1,94 @@
+function Results = crossValidate(features, FeatureSelection, CrossValidation, ClassifyOptions)
+
+Results.classGoldStandard = cell(size(CrossValidation.idx, 1), 1);
+Results.classResult = cell(size(CrossValidation.idx, 1), 1);
+Results.testIdx = cell(size(CrossValidation.idx, 1), 1);
+Results.numFolds = size(CrossValidation.idx, 1);
+Results.classes = ClassifyOptions.classes;
+
+if strcmp(ClassifyOptions.classifier, 'SVM')
+    options.ker = ClassifyOptions.svmKernel;
+    options.arg = ClassifyOptions.svmKernelArgument;
+    options.C =  ClassifyOptions.svmRegularizationConstant;  
+end
+
+
+for runNum = 1:size(CrossValidation.idx, 1)
+    disp(['Cross validation. Run: ' num2str(runNum) ' of ' num2str(size(CrossValidation.idx, 1))]);
+    trainingFeatures = features(CrossValidation.idx{runNum, 1}, FeatureSelection.idx);
+    varTraining = var(trainingFeatures);
+    validFeatures = varTraining ~= 0;
+    trainingFeatures = trainingFeatures(:, validFeatures);
+    
+    testFeatures = features(CrossValidation.idx{runNum, 2}, FeatureSelection.idx);
+    testFeatures = testFeatures(:, validFeatures);
+    
+    classTraining = CrossValidation.classesMapped(CrossValidation.idx{runNum, 1});
+    classTest = CrossValidation.classesMapped(CrossValidation.idx{runNum, 2});
+    
+    Results.testIdx{runNum} = CrossValidation.idx{runNum, 2};
+    Results.classGoldStandard{runNum} = classTest;
+    
+    if strcmp(ClassifyOptions.classifier, 'Bayes')
+        classResult = classify(testFeatures, trainingFeatures, classTraining, ClassifyOptions.BayesSpec, ClassifyOptions.BayesPrior);
+        Results.classResult{runNum} = classResult;
+    elseif strcmp(ClassifyOptions.classifier, 'SVM')
+        for i = 1:numel(ClassifyOptions.classes)
+            classTraining(classTraining == ClassifyOptions.classes(i)) = i;
+            classTest(classTest == ClassifyOptions.classes(i)) = i;
+        end
+        
+        training.y = classTraining';
+        training.X = trainingFeatures';
+        
+        if numel(options.C) > 1
+            if numel(ClassifyOptions.classes) ~= 2
+                if strcmp(ClassifyOptions.svmMulticlass, 'oaa')
+                    options.solver = 'oaasvm';
+                    model = evalsvm(training,options);
+                else
+                    options.solver = 'oaosvm';
+                    model = evalsvm(training,options);
+                end
+            else
+                model = evalsvm(training,options);
+            end
+        else
+            if numel(ClassifyOptions.classes) == 2
+                model = smo(training,options);
+            elseif strcmp(ClassifyOptions.svmMulticlass, 'oaa')
+                model = oaasvm(training,options);
+            else
+                model = oaosvm(training,options);
+            end
+        end
+        
+        [testResult discriminators] = svmclass(testFeatures',model);
+        
+        for i = 1:numel(ClassifyOptions.classes)
+            testResult(testResult == i) = ClassifyOptions.classes(i);
+        end
+        
+        Results.classResult{runNum} = testResult';
+        Results.discriminators{runNum} = discriminators';
+    elseif strcmp(ClassifyOptions.classifier, 'kNN')
+         for i = 1:numel(ClassifyOptions.classes)
+            classTraining(classTraining == ClassifyOptions.classes(i)) = i;
+            classTest(classTest == ClassifyOptions.classes(i)) = i;
+        end
+        
+        training.y = classTraining';
+        training.X = trainingFeatures';   
+        
+        model = knnrule(training, ClassifyOptions.knnK);
+        
+        testResult = knnclass(testFeatures',model);
+        
+        for i = 1:numel(ClassifyOptions.classes)
+            testResult(testResult == i) = ClassifyOptions.classes(i);
+        end
+        
+        Results.classResult{runNum} = testResult';
+    end
+
+end

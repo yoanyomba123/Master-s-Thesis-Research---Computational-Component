@@ -1,0 +1,10 @@
+*.list*
+*.asv*
+*.txt*
+*meta
+AMD*
+DME*
+NORM*
+OCT-Images
+test-script.m
+*.mat

@@ -1,0 +1,88 @@
+function success = writeCompleteOctMeta(path, header, BScanHeader, options, name)
+% WRITECOMPLETEOCTMETA Writes the basic oct meta data into a new file
+% The file is only written out if no meta file with that name exists (a
+% force option overrides this behaviour).
+% SUCCESS = writeCompleteOctMeta(PATH, HEADER, BSCANHEADER, SLO, BSCANS, OPTIONS)
+% PATH: The meta filename path, including the directory without the .meta
+%       ending
+% HEADER: The OCT header information (see openVol)
+% BSCANHEADER: The OCT BScan header information (see openVol)
+% OPTIONS: A string with options. Possible options are:
+%   'force': A existing meta file is replaces
+%   'noheader': no header nor BScan header information is written out
+%   'octseg': Various meta tags used in the OCTSEG environment are written
+%             out and set to their default value
+% NAME: Optional. Name of the current evaluator.
+% SUCCESS: If the file was written out or replaced, 1 is returned, 0 else
+
+
+% Default parameters
+if nargin < 4
+    options = '';
+end
+if nargin < 5
+    name = '';
+end
+
+success = 0;
+
+if((exist([path '.meta']) == 0) || numel(strfind(options, 'force')) ~= 0)
+    fidW = fopen([path '.meta'], 'w');
+    
+    if numel(strfind(options, 'noheader')) == 0      
+        metaWriteHelper(fidW, 'ExamTime', header.ExamTime);
+        metaWriteHelper(fidW, 'ScanFocus', header.ScanFocus);
+        metaWriteHelper(fidW, 'ScanPosition', header.ScanPosition, 'str');
+        metaWriteHelper(fidW, 'ScanPattern', header.ScanPattern());
+        metaWriteHelper(fidW, 'ID', header.ID, 'str');
+        metaWriteHelper(fidW, 'ReferenceID', header.ReferenceID, 'str');
+        metaWriteHelper(fidW, 'PID', header.PID()  );
+        metaWriteHelper(fidW, 'PatientID', header.PatientID, 'str');
+        metaWriteHelper(fidW, 'DOB', header.DOB);
+        metaWriteHelper(fidW, 'VID', header.VID);
+        metaWriteHelper(fidW, 'VisitID', header.VisitID, 'str');
+        metaWriteHelper(fidW, 'VisitDate', header.VisitDate);
+        metaWriteHelper(fidW, 'OctSize', [header.SizeX header.SizeZ header.NumBScans]);
+        metaWriteHelper(fidW, 'OctScale', [header.ScaleX header.ScaleZ header.Distance]);
+        metaWriteHelper(fidW, 'SloSize', [header.SizeXSlo header.SizeYSlo]);
+        metaWriteHelper(fidW, 'SloScale', [header.ScaleXSlo header.ScaleYSlo]);
+        metaWriteHelper(fidW, 'SloFieldSize', header.FieldSizeSlo);
+        metaWriteHelper(fidW, 'BScanStartX', BScanHeader.StartX);
+        metaWriteHelper(fidW, 'BScanStartY', BScanHeader.StartY);
+        metaWriteHelper(fidW, 'BScanEndX', BScanHeader.EndX);
+        metaWriteHelper(fidW, 'BScanEndY', BScanHeader.EndY);    
+    end
+    
+    if numel(strfind(options, 'octseg')) ~= 0
+        metaWriteHelper(fidW, 'OCTSEG', 1);
+        metaWriteHelper(fidW, [name 'RPEauto'], 0);
+        metaWriteHelper(fidW, [name 'RPEman'], 0);
+        metaWriteHelper(fidW, [name 'INFLauto'], 0);
+        metaWriteHelper(fidW, [name 'INFLman'], 0);
+        metaWriteHelper(fidW, [name 'ONFLauto'], 0);
+        metaWriteHelper(fidW, [name 'ONFLman'], 0);
+    end
+    
+    fclose( fidW );
+    success = 1;
+end
+
+end
+
+function metaWriteHelper(fidW, tag, data, mode)
+    if nargin < 4
+        mode = 'num';
+    end
+    
+    if strcmp(mode, 'num')
+        str = sprintf('%g ', data);
+    else
+        str = sprintf('%s ', data);
+    end
+    
+    outputstring = [tag ' ' str];
+    outputstring = deblank(outputstring);
+    
+    fprintf(fidW, '%s\n', outputstring);
+end
+

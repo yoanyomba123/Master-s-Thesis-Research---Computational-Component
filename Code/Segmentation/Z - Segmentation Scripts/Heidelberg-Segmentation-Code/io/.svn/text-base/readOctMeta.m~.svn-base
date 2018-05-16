@@ -1,0 +1,35 @@
+function output = readOctMeta(filename, mode, typemode)
+%READOCTMETA Read meta information from a OCTSEG meta file
+% OUTPUT = readOctMeta(FILENAME, MODE, TYPEMODE)
+% Reads data from a meta file. 
+% FILENAME: Name of the metafile without ".meta" ending
+% MODE: Name of the metatag to read
+% TYPEMODE (OPTIONAL): Determines if the output is a number or string
+%   Options:
+%   'num' (default)
+% Structure of the Meta file is as follows:
+% Each line consists of a tag (=mode) followed by a couple of numbers
+% Separated by whitespace.
+
+
+if nargin < 3
+    typemode = '';
+end
+
+output = [];
+fid = fopen([filename '.meta'], 'r');
+line = fgetl(fid);
+%disp(line);
+while (numel(output) == 0) && ischar(line)
+    [des rem] = strtok(line);
+    if strcmp(des, mode)
+        if strcmp(typemode, 'str')          
+            output = rem;
+        else
+            output = str2num(rem);
+        end
+        break; 
+    end
+    line = fgetl(fid);
+end
+fclose(fid);

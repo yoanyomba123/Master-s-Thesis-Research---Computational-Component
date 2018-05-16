@@ -1,0 +1,42 @@
+#include "MexCommand.h"
+#include "MexFunctions.h"
+#include "Global/Globals.h"
+
+void MexSetViewOrigin::execute(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) const
+{
+	double* origin = (double*)mxGetData(prhs[0]);
+	size_t numDims = mxGetNumberOfElements(prhs[0]);
+
+	double* originMsg = new double[3];
+	originMsg[0] = origin[0];
+	originMsg[1] = origin[1];
+	originMsg[2] = origin[2];
+
+	gMsgQueueToDirectX.writeMessage("setViewOrigin", (void*)originMsg);
+}
+
+std::string MexSetViewOrigin::check(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) const
+{
+	if (nrhs != 1)
+		return "Not the right arguments for setViewOrigin!";
+
+	double* origin = (double*)mxGetData(prhs[0]);
+	size_t numDims = mxGetNumberOfElements(prhs[0]);
+
+	if(numDims!=3) 
+		return "There needs to be three doubles for the view origin!";
+
+	return "";
+}
+
+void MexSetViewOrigin::usage(std::vector<std::string>& outArgs, std::vector<std::string>& inArgs) const
+{
+	inArgs.push_back("viewOrigin");
+}
+
+void MexSetViewOrigin::help(std::vector<std::string>& helpLines) const
+{
+	helpLines.push_back("This will set the view origin (where the camera looks).");
+
+	helpLines.push_back("\tViewOrigin - this is three values that correspond to the point that you would like the camera to point at.");
+}

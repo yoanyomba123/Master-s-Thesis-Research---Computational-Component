@@ -1,0 +1,55 @@
+function [numDescriptor openFuncHandle filenameEnding] = examineOctFile(pathname, filename)
+% EXAMINEOCTFILE Return information about an OCT file
+% NUMDESCRIPTOR OPENFUNCHANDLE = examineOctFile(PATHNAME, FILENAME);
+% Gives a rough examination of the OCT file only according to the filename.
+% Requires calling of the octsegConstantVariables function somewhere
+%   beforehand.
+% PATHNAME: Path to the OCT file, without filename.
+% FILENAME: filename of the OCT file, without path.
+% NUMDESCRIPTOR: A integer represents what filetype the OCT file is
+%   - see octsegConstantVAriables for a description and documentation. 
+% OPENFUNCHANDLE: Handle to a function that opens the file
+
+global FILETYPE;
+
+% Is the file existent?
+if ~exist([pathname filename], 'file')
+    numDescriptor = 0;
+    openFuncHandle = 0;  
+    return;
+end
+
+% Find out the file ending
+[token, remain] = strtok(filename, '.');
+while numel(remain) ~ 0
+    [token, remain] = strtok(remain, '.');
+end
+filenameEnding = token;
+
+% Compare with the available endings;
+if strcmpi(filenameEnding, 'vol')
+    numDescriptor = 1;
+    openFuncHandle = @openVol;
+    filenameEnding = '.vol';
+elseif strcmpi(filenameEnding, 'oct')
+    numDescriptor = 2;
+    openFuncHandle = @openPlain;
+    filenameEnding = '.oct';
+elseif strcmpi(filenameEnding, 'pgm')
+    numDescriptor = 3;
+    openFuncHandle =  @openOctImg;  
+    filenameEnding = '.pgm';
+elseif strcmpi(filenameEnding, 'tif')
+    numDescriptor = 4;
+    openFuncHandle =  @openOctImg;      
+    filenameEnding = '.tif';
+elseif strcmpi(filenameEnding, 'list')
+    numDescriptor = 5;
+    openFuncHandle =  @openOctList;      
+    filenameEnding = '.list';    
+else
+    numDescriptor = 5;
+    openFuncHandle = @openOctImg;  
+end
+    
+end

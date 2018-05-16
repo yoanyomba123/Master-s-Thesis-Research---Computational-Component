@@ -1,0 +1,119 @@
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/retina/!svn/ver/1995/oct/octseg/optimization
+END
+killPopulationDuplicates.m
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/retina/!svn/ver/2004/oct/octseg/optimization/killPopulationDuplicates.m
+END
+mutateGenom.m
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/retina/!svn/ver/2004/oct/octseg/optimization/mutateGenom.m
+END
+getSegments.m
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/retina/!svn/ver/2004/oct/octseg/optimization/getSegments.m
+END
+geneticOptimization.m
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/retina/!svn/ver/2006/oct/octseg/optimization/geneticOptimization.m
+END
+mutateGenomIdx.m
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/retina/!svn/ver/2004/oct/octseg/optimization/mutateGenomIdx.m
+END
+bruteForce.m
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/retina/!svn/ver/2006/oct/octseg/optimization/bruteForce.m
+END
+getSpan.m
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/retina/!svn/ver/2004/oct/octseg/optimization/getSpan.m
+END
+splitSegments.m
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/retina/!svn/ver/2004/oct/octseg/optimization/splitSegments.m
+END
+groupSegments.m
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/retina/!svn/ver/2004/oct/octseg/optimization/groupSegments.m
+END
+createInitPopulation.m
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/retina/!svn/ver/2004/oct/octseg/optimization/createInitPopulation.m
+END
+renderGenom.m
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/retina/!svn/ver/2004/oct/octseg/optimization/renderGenom.m
+END
+getRandomGenom.m
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/retina/!svn/ver/2004/oct/octseg/optimization/getRandomGenom.m
+END
+getPopulationCosts.m
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/retina/!svn/ver/2006/oct/octseg/optimization/getPopulationCosts.m
+END
+renderSingleGenom.m
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/retina/!svn/ver/2004/oct/octseg/optimization/renderSingleGenom.m
+END
+birth.m
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/retina/!svn/ver/2004/oct/octseg/optimization/birth.m
+END
+getCost.m
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/retina/!svn/ver/2006/oct/octseg/optimization/getCost.m
+END
+mergePopulation.m
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/retina/!svn/ver/2004/oct/octseg/optimization/mergePopulation.m
+END
+getSegmentSums.m
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/retina/!svn/ver/2027/oct/octseg/optimization/getSegmentSums.m
+END
+selectParents.m
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/retina/!svn/ver/2004/oct/octseg/optimization/selectParents.m
+END

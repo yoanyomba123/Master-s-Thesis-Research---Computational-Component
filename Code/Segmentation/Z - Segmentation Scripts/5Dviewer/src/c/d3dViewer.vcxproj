@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C904939E-783D-418F-B5AD-38F40BD81A0D}</ProjectGuid>
+    <RootNamespace>d3dViewer</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)Output\$(ProjectName)\$(Configuration)_$(PlatformName)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(ProjectName)\$(Configuration)_$(PlatformName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Output\$(ProjectName)\$(Configuration)_$(PlatformName)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(ProjectName)\$(Configuration)_$(PlatformName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>.\;$(MATLAB_DIR)\extern\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(MATLAB_DIR)\extern\lib\win64\microsoft;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3dcompiler.lib;d3d11.lib;libmx.lib;libmex.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>echo copy "$(OutDir)$(ProjectName).dll" "$(ProjectDir)Mex.mexw64"
+copy "$(OutDir)$(ProjectName).dll" "$(ProjectDir)Mex.mexw64"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>.\;$(MATLAB_DIR)\extern\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(MATLAB_DIR)\extern\lib\win64\microsoft;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3dcompiler.lib;d3d11.lib;libmx.lib;libmex.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>echo copy "$(OutDir)$(ProjectName).dll" "$(ProjectDir)Mex.mexw64"
+copy "$(OutDir)$(ProjectName).dll" "$(ProjectDir)Mex.mexw64"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="d3dViewer.cpp" />
+    <ClCompile Include="D3d\Camera.cpp" />
+    <ClCompile Include="D3d\GraphicObject.cpp" />
+    <ClCompile Include="D3d\Initialization.cpp" />
+    <ClCompile Include="D3d\Material.cpp" />
+    <ClCompile Include="D3d\MeshPrimitive.cpp" />
+    <ClCompile Include="D3d\MessageProcessor.cpp" />
+    <ClCompile Include="D3d\Renderer.cpp" />
+    <ClCompile Include="D3d\SceneNode.cpp" />
+    <ClCompile Include="D3d\TextureLightingObj.cpp" />
+    <ClCompile Include="Messages\DataQueue.cpp" />
+    <ClCompile Include="Messages\DirectXCommands.cpp" />
+    <ClCompile Include="Messages\Image.cpp" />
+    <ClCompile Include="Messages\MessageQueue.cpp" />
+    <ClCompile Include="Messages\QueuePolygon.cpp" />
+    <ClCompile Include="Messages\Threads.cpp" />
+    <ClCompile Include="Messages\TransferObj.cpp" />
+    <ClCompile Include="Mex\Commands.cpp" />
+    <ClCompile Include="Mex\LoadData.cpp" />
+    <ClCompile Include="Mex\MexAddPolygons.cpp" />
+    <ClCompile Include="Mex\MexCaptureSpinMovie.cpp" />
+    <ClCompile Include="Mex\MexCaptureWindow.cpp" />
+    <ClCompile Include="Mex\MexClose.cpp" />
+    <ClCompile Include="Mex\MexCommand.cpp" />
+    <ClCompile Include="Mex\MexDeleteAllPolygons.cpp" />
+    <ClCompile Include="Mex\MexMoveDown.cpp" />
+    <ClCompile Include="Mex\MexMoveLeft.cpp" />
+    <ClCompile Include="Mex\MexMoveRight.cpp" />
+    <ClCompile Include="Mex\MexMoveUp.cpp" />
+    <ClCompile Include="Mex\MexSetBoarderColor.cpp" />
+    <ClCompile Include="Mex\MexSetWorldRotation.cpp" />
+    <ClCompile Include="Mex\MexShowFrameNumber.cpp" />
+    <ClCompile Include="Mex\MexShowPolygonList.cpp" />
+    <ClCompile Include="Mex\MexInit.cpp" />
+    <ClCompile Include="Mex\MexLoadTexture.cpp" />
+    <ClCompile Include="Mex\MexPeelUpdate.cpp" />
+    <ClCompile Include="Mex\MexPlay.cpp" />
+    <ClCompile Include="Mex\MexPoll.cpp" />
+    <ClCompile Include="Mex\MexReleaseControl.cpp" />
+    <ClCompile Include="Mex\MexRemovePolygon.cpp" />
+    <ClCompile Include="Mex\MexResetView.cpp" />
+    <ClCompile Include="Mex\MexRotate.cpp" />
+    <ClCompile Include="Mex\MexPolygonLighting.cpp" />
+    <ClCompile Include="Mex\MexSetBackColor.cpp" />
+    <ClCompile Include="Mex\MexSetCapturePath.cpp" />
+    <ClCompile Include="Mex\MexSetFrame.cpp" />
+    <ClCompile Include="Mex\MexSetViewOrigin.cpp" />
+    <ClCompile Include="Mex\MexSetWindowSize.cpp" />
+    <ClCompile Include="Mex\MexShowLabels.cpp" />
+    <ClCompile Include="Mex\MexShowScaleBar.cpp" />
+    <ClCompile Include="Mex\MexShowWidget.cpp" />
+    <ClCompile Include="Mex\MexTakeControl.cpp" />
+    <ClCompile Include="Mex\MexTextureAttenuation.cpp" />
+    <ClCompile Include="Mex\MexTextureLighting.cpp" />
+    <ClCompile Include="Mex\MexTransferFunction.cpp" />
+    <ClCompile Include="Mex\MexShowAllPolygons.cpp" />
+    <ClCompile Include="Mex\MexShowTexture.cpp" />
+    <ClCompile Include="Mex\MexToggleWireframe.cpp" />
+    <ClCompile Include="Mex\MexSetViewRotation.cpp" />
+    <ClCompile Include="Mex\MexZoomDecrement.cpp" />
+    <ClCompile Include="Mex\MexZoomIncrement.cpp" />
+    <ClCompile Include="Mex\Update.cpp" />
+    <ClCompile Include="Mex\Viewer.cpp" />
+    <ClCompile Include="Mex\Widget.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D3d\Camera.h" />
+    <ClInclude Include="D3d\GraphicObject.h" />
+    <ClInclude Include="D3d\Initialization.h" />
+    <ClInclude Include="D3d\Material.h" />
+    <ClInclude Include="D3d\MeshPrimitive.h" />
+    <ClInclude Include="D3d\MessageProcessor.h" />
+    <ClInclude Include="D3d\Renderer.h" />
+    <ClInclude Include="D3d\RendererPackage.h" />
+    <ClInclude Include="D3d\SceneNode.h" />
+    <ClInclude Include="D3d\TextureLightingObj.h" />
+    <ClInclude Include="D3d\Timer.h" />
+    <ClInclude Include="Global\Defines.h" />
+    <ClInclude Include="Global\Globals.h" />
+    <ClInclude Include="Global\Vec.h" />
+    <ClInclude Include="Global\VecFuncs.h" />
+    <ClInclude Include="Messages\DataQueue.h" />
+    <ClInclude Include="Messages\DirectXCommands.h" />
+    <ClInclude Include="Messages\Image.h" />
+    <ClInclude Include="Messages\MessageQueue.h" />
+    <ClInclude Include="Messages\MexErrorMsg.h" />
+    <ClInclude Include="Messages\QueuePolygon.h" />
+    <ClInclude Include="Messages\Threads.h" />
+    <ClInclude Include="Messages\TransferObj.h" />
+    <ClInclude Include="Mex\CommandList.h" />
+    <ClInclude Include="Mex\MexCommand.h" />
+    <ClInclude Include="Mex\MexFunctions.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

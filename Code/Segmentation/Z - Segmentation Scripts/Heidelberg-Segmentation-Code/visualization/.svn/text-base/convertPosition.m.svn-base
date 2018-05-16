@@ -1,0 +1,120 @@
+function [octPos sloPos] = convertPosition(pos, mode, DataDescriptor)
+% CONVERTPOSITION converts positions in pixels between OCT and SLO images
+% and performed boundary checks.
+% [OCTPOS SLOPOS] = convertPosition(POS, MODE, HEADER, BSCANHEADER)
+% OCTPOS, SLOPOS: The new positions, in pixel retues
+% POS: Input position. may be floating point numbers, and may also be out
+%   of range
+% MODE: What tranformation should be made? Possibilities:
+%   - 'OctToSloVol': An OCT volume position (xy) is converted to the SLO 
+%       position (xy)
+%   - 'SloToOctVol': An SLO position (xy) is converted to the (xy) position
+%       on the OCT volume
+%   - 'OctToSloCirc': Same thing for circ. 2D Scans.
+%   - 'SloToOctCirc': Same thin for circ. 2D OCT scans. 
+% DataDescriptor: Structure with OCT DataDescriptor.Header OCT headers according 
+%                 to HE & OCTSEG specifications. Entries:
+%                 - Header
+%                 - DataDescriptor.BScanHeader
+
+startX = DataDescriptor.BScanHeader.StartX;
+startY = DataDescriptor.BScanHeader.StartY;
+endX = DataDescriptor.BScanHeader.EndX;
+endY = DataDescriptor.BScanHeader.EndY;
+
+sloScale = [DataDescriptor.Header.ScaleXSlo DataDescriptor.Header.ScaleYSlo];
+octSize = [DataDescriptor.Header.SizeX ...
+           DataDescriptor.Header.NumBScans ...
+           DataDescriptor.Header.SizeZ];
+%sloSize = [DataDescriptor.Header.SizeXSlo DataDescriptor.Header.SizeXSlo];
+
+if strcmp(mode, 'SloToOctVol')
+    [startX endX startY endY] = checkScanPositionConsistency(startX, endX, startY, endY);  
+    octPos = [1 1];
+    sloPos = round(borderCheckSlo(pos));
+    
+    rwPos = pos .* [sloScale(2) sloScale(1)];
+    octPos(1) = (rwPos(2) - min([startX(1) endX(1)])) ...
+                / DataDescriptor.Header.ScaleX;
+    octPos(2) = octSize(2) - (rwPos(1) - min([startY(1) startY(end)])) / DataDescriptor.Header.Distance;
+    octPos = [round(borderCheckOct(octPos)) 1];
+elseif strcmp(mode, 'OctToSloVol')
+    [startX endX startY endY] = checkScanPositionConsistency(startX, endX, startY, endY);
+    octPos = round(borderCheckOct(pos));
+    octPos = [octPos(1) octPos(2) octPos(3)];
+    sloPos(2) = (min([startX(pos(2)) endX(pos(2))]) + pos(1) * DataDescriptor.Header.ScaleX) / sloScale(1);
+    sloPos(1) = startY(pos(2)) / sloScale(2);
+    sloPos = round(borderCheckSlo(sloPos));
+elseif strcmp(mode, 'SloToOctCirc')
+    BScanEndX = endX;
+    BScanEndY = endY;
+    circleCenter = [round(BScanEndY * (1/sloScale(2))); round(BScanEndX * (1/sloScale(1)))];
+    sloPos = atan2((pos(2) - circleCenter(2)), (pos(1) - circleCenter(1)));
+    if strncmp(DataDescriptor.Header.ScanPosition, 'OD', 2)  
+        octPos = (- sloPos + pi * 3 /2 ) / (2 * pi) * octSize(1);
+        if octPos >= octSize(1)
+            octPos = octPos - octSize(1);
+        end
+    else     
+        octPos = (sloPos + pi * 3 /2 ) / (2 * pi) * octSize(1);
+        if octPos >= octSize(1)
+            octPos = octPos - octSize(1);
+        end
+    end
+    octPos = [round(octPos + 1) 1];
+elseif strcmp(mode, 'OctToSloCirc')
+    octPos = round(borderCheckOct(pos));
+    octPos = [octPos(1) 1 octPos(3)];
+    
+    if strncmp(DataDescriptor.Header.ScanPosition, 'OD', 2)
+        sloPos = - octPos * (2 * pi) / octSize(1) + pi * 3 /2;
+    else
+        sloPos = octPos * (2 * pi) / octSize(1) - pi * 3 /2;
+    end
+end
+
+function ret = borderCheckSlo(val)
+    minX = min([startX(1) endX(1)]) / sloScale(1);
+    maxX = max([startX(end) endX(end)]) / sloScale(1);
+    minY = min([startY(1) startY(end)]) / sloScale(2);
+    maxY = max([endY(1) endY(end)]) / sloScale(2);
+    
+    ret = val;
+    if ret(1) > maxY 
+        ret(1) = maxY;
+    elseif ret(1) < minY;
+        ret(1) = minY;
+    end
+
+    if ret(2) > maxX
+        ret(2) = maxX;
+    elseif ret(2) < minX
+        ret(2) = minX;
+    end
+end
+
+function ret = borderCheckOct(val)
+    ret = val;
+    if ret(1) > octSize(1) 
+        ret(1) = octSize(1);
+    elseif ret(1) < 1
+        ret(1) = 1;
+    end
+
+    if ret(2) > octSize(2) 
+        ret(2) = octSize(2);
+    elseif ret(2) < 1
+        ret(2) = 1;
+    end
+    
+    if numel(val) == 3
+        if ret(3) > octSize(3) 
+            ret(3) = octSize(3);
+        elseif ret(1) < 1
+            ret(1) = 1;
+        end     
+    end
+end
+
+
+end
